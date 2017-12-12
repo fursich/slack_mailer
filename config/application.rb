@@ -1,13 +1,12 @@
 require_relative 'boot'
-
 require 'rails/all'
+require 'dotenv'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require 'dotenv'
-Dotenv.load
+Dotenv::Railtie.load
 
 module SlackMailer
   class Application < Rails::Application
