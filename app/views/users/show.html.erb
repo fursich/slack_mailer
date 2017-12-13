@@ -1,17 +1,19 @@
 <p>
-  <strong>Name:</strong>
+  <strong>名前:</strong>
   <%= @user.name %>
 </p>
 
 <p>
-  <strong>Email:</strong>
+  <strong>メール:</strong>
   <%= @user.email %>
 </p>
 
 <p>
-  <strong>Comment:</strong>
+  <strong>コメント:</strong>
   <%= @user.comment %>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<% if @user == current_user  %>
+  <%= link_to '変更', edit_user_path(@user) %> |
+<% end %>
+<%= link_to 'トップに戻る', users_path %>

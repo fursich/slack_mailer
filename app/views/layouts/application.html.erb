@@ -10,12 +10,12 @@
 
   <body>
     <div id="nav">
-      <% if current_user %>
-        <%= link_to "Edit Profile", edit_user_path(current_user.id) %>
-        <%= link_to "Logout", :logout, method: :delete %>
+      <% if logged_in? %>
+        <%= link_to "プロフィール", edit_user_path(current_user.id) %>
+        <%= link_to "ログアウト", :logout, method: :delete %>
       <% else %>
-        <%= link_to "Register", new_user_path %> |
-        <%= link_to "Login", :login %>
+        <%= link_to "登録", new_user_path %> |
+        <%= link_to "ログイン", :login %>
       <% end %>
     </div>
     <div>
