@@ -1,5 +1,5 @@
 {
-  "name": "slack_mailer",
+  "name": "slack_mailer_sample_app",
   "private": true,
   "dependencies": {}
 }

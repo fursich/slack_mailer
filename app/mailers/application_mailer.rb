@@ -5,7 +5,6 @@ class ApplicationMailer < ActionMailer::Base
   # prodution環境以外では、slack mailerを使うようにヘッダーをオーバーライドする
   def mail(header_options = {}, &block)
     header_options.merge!(def_delivery_method_option).compact!
-
     super(header_options, &block)
   end
 

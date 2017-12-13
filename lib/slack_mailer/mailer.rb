@@ -1,40 +1,41 @@
-require 'slack-ruby-client'
 
 module SlackMailer
   class Mailer
+    include ActionView::Helpers::SanitizeHelper
+
     def initialize(config={})
-      @client = Slack::Web::Client.new
       @channel_setting = config[:channel] || default_channel
     end
 
     def deliver!(mail)
-      channel = '#' + ( mail[:channel].try(:value) || @channel_setting )
-      @client.chat_postMessage(channel: channel, text: 'welcome mailが発送されました')
-      @client.chat_postMessage(channel: channel, text: format(mail))
-      # @client.chat_postMessage(channel: channel, text: "#{mail.to_s.inspect}")
+      channel     = set_channel(mail)
+      attachments = compose_attachments(mail)
+      SlackNotifier::Notification.post(channel: channel, **attachments)
     end
 
     private
+    def compose_attachments(mail)
+      header = compose_header
+      body   = compose_body(mail)
+      SlackNotifier::Format.compose_attachments(header, body)
+    end
 
-    def format(mail)
-      <<~"EOS"
-      ```
-        from:       #{mail.from}
-        to:         #{mail.to                 || '（なし）'}
-        cc:         #{mail.cc                 || '（なし）'}
-        subject:    #{mail.subject            || '（なし）'}
-      ```
-      ```
-        body(text):
+    def compose_header
+      {
+        title: 'メールが発送されました',
+        text:  "#{Rails.env}からメールが送信されました",
+      }
+    end
 
-        #{retrive_text_part(mail) || '（なし）'}
-      ```
-      ```
-        body(html):
-
-        #{retrive_html_part(mail) || '（なし）'}
-      ```
-      EOS
+    def compose_body(mail)
+      {
+        subject:      "#{mail.subject || '（なし）'}",
+        from:         "#{mail.from}",
+        to:           "#{mail.to      || '（なし）'}",
+        cc:           "#{mail.cc      || '（なし）'}",
+        'body(text)': "#{retrive_text_part(mail)            || '（なし）'}",
+        'body(html)': "#{strip_tags(retrive_html_part(mail)) || '（なし）'}",
+      }
     end
 
     def retrive_text_part(mail)
@@ -59,6 +60,10 @@ module SlackMailer
 
     def plain_html?(mail)
       (mail.mime_type =~ /^text\/html$/i)
+    end
+
+    def set_channel(mail)
+      channel = ( mail[:channel].try(:value) || @channel_setting )
     end
 
     def default_channel

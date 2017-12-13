@@ -1,24 +1,11 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Slack Mailerサンプル
 
-Things you may want to cover:
+（機能は`lib/`以下にまとめています）
 
-* Ruby version
+* SlackでWebhookを設定してアドレスを取得します
 
-* System dependencies
+* 必要に応じてチャネル作成
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* `.env.default`を参考に`.env`に環境変数を設定してください
